@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bingo - Adverbios de Frecuencia</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .game-setup {
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .player-selection {
+            margin: 20px 0;
+        }
+        
+        .player-selection label {
+            font-size: 1.2em;
+            margin-right: 15px;
+        }
+        
+        .player-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .player-btn {
+            padding: 10px 20px;
+            border: 2px solid #4CAF50;
+            background: white;
+            color: #4CAF50;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+        
+        .player-btn:hover, .player-btn.active {
+            background: #4CAF50;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .start-btn {
+            background: linear-gradient(135deg, #FF6B6B, #FF5252);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            border-radius: 30px;
+            cursor: pointer;
+            margin: 20px;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
+        
+        .start-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.6);
+        }
+        
+        .game-area {
+            display: none;
+            padding: 20px;
+        }
+        
+        .player-info {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 10px;
+        }
+        
+        .player-info h2 {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+        
+        .bingo-card {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            max-width: 600px;
+            margin: 0 auto 30px;
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .bingo-cell {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.3s;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .bingo-cell:hover {
+            border-color: #4CAF50;
+            transform: scale(1.05);
+        }
+        
+        .bingo-cell.marked {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            border-color: #4CAF50;
+            transform: scale(0.95);
+        }
+        
+        .bingo-cell.marked::after {
+            content: "✓";
+            position: absolute;
+            top: 5px;
+            right: 8px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        
+        .bingo-button {
+            background: linear-gradient(135deg, #FF6B6B, #FF5252);
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            font-size: 2em;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            margin: 20px auto;
+            display: block;
+            transition: all 0.3s;
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .bingo-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 35px rgba(255, 107, 107, 0.6);
+        }
+        
+        .called-sentence {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 1.3em;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .teacher-controls {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .teacher-controls h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .call-sentence-btn {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            border-radius: 25px;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s;
+        }
+        
+        .call-sentence-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+        }
+        
+        .winner-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .winner-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            max-width: 500px;
+        }
+        
+        .winner-content h2 {
+            color: #4CAF50;
+            font-size: 3em;
+            margin-bottom: 20px;
+            animation: bounce 1s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-20px); }
+            60% { transform: translateY(-10px); }
+        }
+        
+        .new-game-btn {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+        
+        .instructions {
+            background: #e8f5e8;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #4CAF50;
+        }
+        
+        .instructions h3 {
+            color: #2e7d32;
+            margin-bottom: 10px;
+        }
+        
+        .instructions ol {
+            color: #2e7d32;
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+        }
+        
+        @media (max-width: 768px) {
+            .bingo-card {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 5px;
+                padding: 15px;
+            }
+            
+            .bingo-cell {
+                font-size: 0.8em;
+                padding: 8px;
+                min-height: 60px;
+            }
+            
+            .player-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 BINGO - Adverbios de Frecuencia</h1>
+            <p>Juego multijugador para 6 participantes</p>
+        </div>
+        
+        <div class="game-setup" id="gameSetup">
+            <div class="instructions">
+                <h3>📋 Instrucciones del Juego:</h3>
+                <ol>
+                    <li>Cada jugador selecciona su número de participante (1-6)</li>
+                    <li>El sistema genera cartones únicos con frases incompletas</li>
+                    <li>El profesor/app dice una oración completa con adverbio de frecuencia</li>
+                    <li>Si tienes esa frase en tu cartón, haz clic para marcarla</li>
+                    <li>El primero en completar una línea (horizontal, vertical o diagonal) presiona "¡BINGO!" para ganar</li>
+                </ol>
+            </div>
+            
+            <div class="player-selection">
+                <label for="playerSelect">Selecciona tu número de jugador:</label>
+                <div class="player-buttons">
+                    <button class="player-btn" data-player="1">Jugador 1</button>
+                    <button class="player-btn" data-player="2">Jugador 2</button>
+                    <button class="player-btn" data-player="3">Jugador 3</button>
+                    <button class="player-btn" data-player="4">Jugador 4</button>
+                    <button class="player-btn" data-player="5">Jugador 5</button>
+                    <button class="player-btn" data-player="6">Jugador 6</button>
+                </div>
+            </div>
+            
+            <button class="start-btn" id="startGame" onclick="startGame()">🎮 Comenzar Partida</button>
+        </div>
+        
+        <div class="game-area" id="gameArea">
+            <div class="player-info" id="playerInfo">
+                <h2 id="currentPlayer">Jugador 1</h2>
+                <p>Marca las frases que coincidan con las que dice el profesor</p>
+            </div>
+            
+            <div class="called-sentence" id="calledSentence">
+                Esperando la primera oración...
+            </div>
+            
+            <div class="teacher-controls">
+                <h3>🎓 Panel del Profesor</h3>
+                <button class="call-sentence-btn" onclick="callNextSentence()">📢 Decir Siguiente Oración</button>
+                <button class="call-sentence-btn" onclick="resetGame()">🔄 Nueva Partida</button>
+            </div>
+            
+            <div class="bingo-card" id="bingoCard"></div>
+            
+            <button class="bingo-button" id="bingoBtn" onclick="checkBingo()">¡BINGO! 🎉</button>
+        </div>
+        
+        <div class="winner-modal" id="winnerModal">
+            <div class="winner-content">
+                <h2>🎉 ¡BINGO!</h2>
+                <p id="winnerText">¡Felicitaciones!</p>
+                <button class="new-game-btn" onclick="resetGame()">🎮 Nueva Partida</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Base de datos de frases con adverbios de frecuencia
+        const sentences = [
+            { incomplete: "I ___ eat breakfast at 7 AM", complete: "I always eat breakfast at 7 AM", adverb: "always" },
+            { incomplete: "She ___ goes to the gym", complete: "She usually goes to the gym", adverb: "usually" },
+            { incomplete: "We ___ watch TV at night", complete: "We often watch TV at night", adverb: "often" },
+            { incomplete: "He ___ drinks coffee", complete: "He sometimes drinks coffee", adverb: "sometimes" },
+            { incomplete: "They ___ go to bed early", complete: "They rarely go to bed early", adverb: "rarely" },
+            { incomplete: "I ___ eat fast food", complete: "I never eat fast food", adverb: "never" },
+            { incomplete: "My mom ___ cooks dinner", complete: "My mom always cooks dinner", adverb: "always" },
+            { incomplete: "Students ___ study hard", complete: "Students usually study hard", adverb: "usually" },
+            { incomplete: "We ___ visit our grandparents", complete: "We often visit our grandparents", adverb: "often" },
+            { incomplete: "She ___ plays video games", complete: "She sometimes plays video games", adverb: "sometimes" },
+            { incomplete: "I ___ miss the bus", complete: "I rarely miss the bus", adverb: "rarely" },
+            { incomplete: "He ___ forgets his homework", complete: "He never forgets his homework", adverb: "never" },
+            { incomplete: "Cats ___ sleep during the day", complete: "Cats always sleep during the day", adverb: "always" },
+            { incomplete: "We ___ have pizza on Fridays", complete: "We usually have pizza on Fridays", adverb: "usually" },
+            { incomplete: "I ___ read books", complete: "I often read books", adverb: "often" },
+            { incomplete: "She ___ gets angry", complete: "She sometimes gets angry", adverb: "sometimes" },
+            { incomplete: "Dogs ___ bite strangers", complete: "Dogs rarely bite strangers", adverb: "rarely" },
+            { incomplete: "We ___ go swimming in winter", complete: "We never go swimming in winter", adverb: "never" },
+            { incomplete: "Teachers ___ give homework", complete: "Teachers always give homework", adverb: "always" },
+            { incomplete: "I ___ drink tea", complete: "I usually drink tea", adverb: "usually" },
+            { incomplete: "Children ___ play outside", complete: "Children often play outside", adverb: "often" },
+            { incomplete: "He ___ watches horror movies", complete: "He sometimes watches horror movies", adverb: "sometimes" },
+            { incomplete: "She ___ travels alone", complete: "She rarely travels alone", adverb: "rarely" },
+            { incomplete: "I ___ eat vegetables", complete: "I never eat vegetables", adverb: "never" },
+            { incomplete: "Birds ___ sing in the morning", complete: "Birds always sing in the morning", adverb: "always" },
+            { incomplete: "We ___ go to the beach", complete: "We usually go to the beach", adverb: "usually" },
+            { incomplete: "I ___ listen to music", complete: "I often listen to music", adverb: "often" },
+            { incomplete: "She ___ wears makeup", complete: "She sometimes wears makeup", adverb: "sometimes" },
+            { incomplete: "He ___ cries", complete: "He rarely cries", adverb: "rarely" },
+            { incomplete: "We ___ eat dessert", complete: "We never eat dessert", adverb: "never" }
+        ];
+
+        let playerCards = {};
+        let currentPlayer = 1;
+        let calledSentences = [];
+        let gameInProgress = false;
+        let allSentences = [...sentences];
+
+        // Función para mezclar array
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // Generar cartones únicos para cada jugador
+        function generatePlayerCards() {
+            playerCards = {};
+            const shuffled = shuffleArray([...sentences]);
+            
+            for (let player = 1; player <= 6; player++) {
+                const startIndex = (player - 1) * 5;
+                playerCards[player] = shuffled.slice(startIndex, startIndex + 25).map((sentence, index) => ({
+                    ...sentence,
+                    marked: false,
+                    id: index
+                }));
+            }
+        }
+
+        // Selección de jugador
+        document.querySelectorAll('.player-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.player-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentPlayer = parseInt(this.dataset.player);
+            });
+        });
+
+        // Iniciar juego
+        function startGame() {
+            if (!currentPlayer) {
+                alert('Por favor, selecciona tu número de jugador');
+                return;
+            }
+            
+            generatePlayerCards();
+            gameInProgress = true;
+            calledSentences = [];
+            allSentences = shuffleArray([...sentences]);
+            
+            document.getElementById('gameSetup').style.display = 'none';
+            document.getElementById('gameArea').style.display = 'block';
+            document.getElementById('currentPlayer').textContent = `Jugador ${currentPlayer}`;
+            
+            renderBingoCard();
+        }
+
+        // Renderizar cartón de bingo
+        function renderBingoCard() {
+            const cardContainer = document.getElementById('bingoCard');
+            cardContainer.innerHTML = '';
+            
+            const playerCard = playerCards[currentPlayer];
+            
+            playerCard.forEach((cell, index) => {
+                const cellElement = document.createElement('div');
+                cellElement.className = 'bingo-cell';
+                cellElement.textContent = cell.incomplete;
+                cellElement.dataset.index = index;
+                
+                if (cell.marked) {
+                    cellElement.classList.add('marked');
+                }
+                
+                cellElement.addEventListener('click', function() {
+                    markCell(index);
+                });
+                
+                cardContainer.appendChild(cellElement);
+            });
+        }
+
+        // Marcar celda
+        function markCell(index) {
+            const playerCard = playerCards[currentPlayer];
+            const calledSentence = document.getElementById('calledSentence').textContent;
+            
+            // Verificar si la frase coincide con alguna de las oraciones llamadas
+            const matchFound = calledSentences.some(called => {
+                return playerCard[index].complete === called.complete;
+            });
+            
+            if (matchFound) {
+                playerCard[index].marked = !playerCard[index].marked;
+                renderBingoCard();
+            } else {
+                alert('Esta frase no coincide con ninguna de las oraciones que se han dicho');
+            }
+        }
+
+        // Llamar siguiente oración
+        function callNextSentence() {
+            if (allSentences.length === 0) {
+                alert('Se han agotado todas las oraciones. Inicia una nueva partida.');
+                return;
+            }
+            
+            const nextSentence = allSentences.pop();
+            calledSentences.push(nextSentence);
+            
+            document.getElementById('calledSentence').textContent = nextSentence.complete;
+        }
+
+        // Verificar BINGO
+        function checkBingo() {
+            const playerCard = playerCards[currentPlayer];
+            
+            // Verificar líneas horizontales
+            for (let row = 0; row < 5; row++) {
+                let count = 0;
+                for (let col = 0; col < 5; col++) {
+                    if (playerCard[row * 5 + col].marked) count++;
+                }
+                if (count === 5) {
+                    showWinner(`¡Jugador ${currentPlayer} ha ganado con una línea horizontal!`);
+                    return;
+                }
+            }
+            
+            // Verificar líneas verticales
+            for (let col = 0; col < 5; col++) {
+                let count = 0;
+                for (let row = 0; row < 5; row++) {
+                    if (playerCard[row * 5 + col].marked) count++;
+                }
+                if (count === 5) {
+                    showWinner(`¡Jugador ${currentPlayer} ha ganado con una línea vertical!`);
+                    return;
+                }
+            }
+            
+            // Verificar diagonal principal
+            let count1 = 0;
+            for (let i = 0; i < 5; i++) {
+                if (playerCard[i * 5 + i].marked) count1++;
+            }
+            if (count1 === 5) {
+                showWinner(`¡Jugador ${currentPlayer} ha ganado con una línea diagonal!`);
+                return;
+            }
+            
+            // Verificar diagonal secundaria
+            let count2 = 0;
+            for (let i = 0; i < 5; i++) {
+                if (playerCard[i * 5 + (4 - i)].marked) count2++;
+            }
+            if (count2 === 5) {
+                showWinner(`¡Jugador ${currentPlayer} ha ganado con una línea diagonal!`);
+                return;
+            }
+            
+            alert('¡Aún no tienes BINGO! Sigue jugando.');
+        }
+
+        // Mostrar ganador
+        function showWinner(message) {
+            document.getElementById('winnerText').textContent = message;
+            document.getElementById('winnerModal').style.display = 'flex';
+            gameInProgress = false;
+        }
+
+        // Reiniciar juego
+        function resetGame() {
+            document.getElementById('winnerModal').style.display = 'none';
+            document.getElementById('gameArea').style.display = 'none';
+            document.getElementById('gameSetup').style.display = 'block';
+            document.getElementById('calledSentence').textContent = 'Esperando la primera oración...';
+            
+            // Resetear selección de jugador
+            document.querySelectorAll('.player-btn').forEach(btn => btn.classList.remove('active'));
+            currentPlayer = 1;
+            gameInProgress = false;
+            calledSentences = [];
+        }
+
+        // Seleccionar automáticamente el primer jugador por defecto
+        document.querySelector('.player-btn[data-player="1"]').click();
+    </script>
+</body>
+</html>
