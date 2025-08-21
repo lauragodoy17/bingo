@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bingo - Adverbios de Frecuencia</title>
+    <title>Bingo - Frequency Adverbs</title>
     <style>
         * {
             margin: 0;
@@ -330,69 +330,69 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🎯 BINGO - Adverbios de Frecuencia</h1>
-            <p>Juego multijugador para 6 participantes</p>
+            <h1>🎯 BINGO - Frequency Adverbs</h1>
+            <p>Multiplayer game for 6 participants</p>
         </div>
         
         <div class="game-setup" id="gameSetup">
             <div class="instructions">
-                <h3>📋 Instrucciones del Juego:</h3>
+                <h3>📋 Game Instructions:</h3>
                 <ol>
-                    <li>Cada jugador selecciona su número de participante (1-6)</li>
-                    <li>El sistema genera cartones únicos con frases incompletas</li>
-                    <li>El profesor/app dice una oración completa con adverbio de frecuencia</li>
-                    <li>Si tienes esa frase en tu cartón, haz clic para marcarla</li>
-                    <li>El primero en completar una línea (horizontal, vertical o diagonal) presiona "¡BINGO!" para ganar</li>
+                    <li>Each player selects their participant number (1-6)</li>
+                    <li>The system generates unique cards with incomplete sentences</li>
+                    <li>The teacher/app says a complete sentence with a frequency adverb</li>
+                    <li>If you have that sentence on your card, click to mark it</li>
+                    <li>The first to complete a line (horizontal, vertical or diagonal) presses "BINGO!" to win</li>
                 </ol>
             </div>
             
             <div class="player-selection">
-                <label for="playerSelect">Selecciona tu número de jugador:</label>
+                <label for="playerSelect">Select your player number:</label>
                 <div class="player-buttons">
-                    <button class="player-btn" data-player="1">Jugador 1</button>
-                    <button class="player-btn" data-player="2">Jugador 2</button>
-                    <button class="player-btn" data-player="3">Jugador 3</button>
-                    <button class="player-btn" data-player="4">Jugador 4</button>
-                    <button class="player-btn" data-player="5">Jugador 5</button>
-                    <button class="player-btn" data-player="6">Jugador 6</button>
+                    <button class="player-btn" data-player="1">Player 1</button>
+                    <button class="player-btn" data-player="2">Player 2</button>
+                    <button class="player-btn" data-player="3">Player 3</button>
+                    <button class="player-btn" data-player="4">Player 4</button>
+                    <button class="player-btn" data-player="5">Player 5</button>
+                    <button class="player-btn" data-player="6">Player 6</button>
                 </div>
             </div>
             
-            <button class="start-btn" id="startGame" onclick="startGame()">🎮 Comenzar Partida</button>
+            <button class="start-btn" id="startGame" onclick="startGame()">🎮 Start Game</button>
         </div>
         
         <div class="game-area" id="gameArea">
             <div class="player-info" id="playerInfo">
-                <h2 id="currentPlayer">Jugador 1</h2>
-                <p>Marca las frases que coincidan con las que dice el profesor</p>
+                <h2 id="currentPlayer">Player 1</h2>
+                <p>Mark the sentences that match what the teacher says</p>
             </div>
             
             <div class="called-sentence" id="calledSentence">
-                Esperando la primera oración...
+                Waiting for the first sentence...
             </div>
             
             <div class="teacher-controls">
-                <h3>🎓 Panel del Profesor</h3>
-                <button class="call-sentence-btn" onclick="callNextSentence()">📢 Decir Siguiente Oración</button>
-                <button class="call-sentence-btn" onclick="resetGame()">🔄 Nueva Partida</button>
+                <h3>🎓 Teacher Panel</h3>
+                <button class="call-sentence-btn" onclick="callNextSentence()">📢 Call Next Sentence</button>
+                <button class="call-sentence-btn" onclick="resetGame()">🔄 New Game</button>
             </div>
             
             <div class="bingo-card" id="bingoCard"></div>
             
-            <button class="bingo-button" id="bingoBtn" onclick="checkBingo()">¡BINGO! 🎉</button>
+            <button class="bingo-button" id="bingoBtn" onclick="checkBingo()">BINGO! 🎉</button>
         </div>
         
         <div class="winner-modal" id="winnerModal">
             <div class="winner-content">
-                <h2>🎉 ¡BINGO!</h2>
-                <p id="winnerText">¡Felicitaciones!</p>
-                <button class="new-game-btn" onclick="resetGame()">🎮 Nueva Partida</button>
+                <h2>🎉 BINGO!</h2>
+                <p id="winnerText">Congratulations!</p>
+                <button class="new-game-btn" onclick="resetGame()">🎮 New Game</button>
             </div>
         </div>
     </div>
 
     <script>
-        // Base de datos de frases con adverbios de frecuencia
+        // Database of sentences with frequency adverbs
         const sentences = [
             { incomplete: "I ___ eat breakfast at 7 AM", complete: "I always eat breakfast at 7 AM", adverb: "always" },
             { incomplete: "She ___ goes to the gym", complete: "She usually goes to the gym", adverb: "usually" },
@@ -432,7 +432,7 @@
         let gameInProgress = false;
         let allSentences = [...sentences];
 
-        // Función para mezclar array
+        // Function to shuffle array
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -441,7 +441,7 @@
             return array;
         }
 
-        // Generar cartones únicos para cada jugador
+        // Generate unique cards for each player
         function generatePlayerCards() {
             playerCards = {};
             const shuffled = shuffleArray([...sentences]);
@@ -456,7 +456,7 @@
             }
         }
 
-        // Selección de jugador
+        // Player selection
         document.querySelectorAll('.player-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 document.querySelectorAll('.player-btn').forEach(b => b.classList.remove('active'));
@@ -465,10 +465,10 @@
             });
         });
 
-        // Iniciar juego
+        // Start game
         function startGame() {
             if (!currentPlayer) {
-                alert('Por favor, selecciona tu número de jugador');
+                alert('Please select your player number');
                 return;
             }
             
@@ -479,12 +479,12 @@
             
             document.getElementById('gameSetup').style.display = 'none';
             document.getElementById('gameArea').style.display = 'block';
-            document.getElementById('currentPlayer').textContent = `Jugador ${currentPlayer}`;
+            document.getElementById('currentPlayer').textContent = `Player ${currentPlayer}`;
             
             renderBingoCard();
         }
 
-        // Renderizar cartón de bingo
+        // Render bingo card
         function renderBingoCard() {
             const cardContainer = document.getElementById('bingoCard');
             cardContainer.innerHTML = '';
@@ -509,12 +509,12 @@
             });
         }
 
-        // Marcar celda
+        // Mark cell
         function markCell(index) {
             const playerCard = playerCards[currentPlayer];
             const calledSentence = document.getElementById('calledSentence').textContent;
             
-            // Verificar si la frase coincide con alguna de las oraciones llamadas
+            // Check if the sentence matches any of the called sentences
             const matchFound = calledSentences.some(called => {
                 return playerCard[index].complete === called.complete;
             });
@@ -523,14 +523,14 @@
                 playerCard[index].marked = !playerCard[index].marked;
                 renderBingoCard();
             } else {
-                alert('Esta frase no coincide con ninguna de las oraciones que se han dicho');
+                alert('This sentence does not match any of the sentences that have been called');
             }
         }
 
-        // Llamar siguiente oración
+        // Call next sentence
         function callNextSentence() {
             if (allSentences.length === 0) {
-                alert('Se han agotado todas las oraciones. Inicia una nueva partida.');
+                alert('All sentences have been used. Start a new game.');
                 return;
             }
             
@@ -540,80 +540,81 @@
             document.getElementById('calledSentence').textContent = nextSentence.complete;
         }
 
-        // Verificar BINGO
+        // Check BINGO
         function checkBingo() {
             const playerCard = playerCards[currentPlayer];
             
-            // Verificar líneas horizontales
+            // Check horizontal lines
             for (let row = 0; row < 5; row++) {
                 let count = 0;
                 for (let col = 0; col < 5; col++) {
                     if (playerCard[row * 5 + col].marked) count++;
                 }
                 if (count === 5) {
-                    showWinner(`¡Jugador ${currentPlayer} ha ganado con una línea horizontal!`);
+                    showWinner(`Player ${currentPlayer} has won with a horizontal line!`);
                     return;
                 }
             }
             
-            // Verificar líneas verticales
+            // Check vertical lines
             for (let col = 0; col < 5; col++) {
                 let count = 0;
                 for (let row = 0; row < 5; row++) {
                     if (playerCard[row * 5 + col].marked) count++;
                 }
                 if (count === 5) {
-                    showWinner(`¡Jugador ${currentPlayer} ha ganado con una línea vertical!`);
+                    showWinner(`Player ${currentPlayer} has won with a vertical line!`);
                     return;
                 }
             }
             
-            // Verificar diagonal principal
+            // Check main diagonal
             let count1 = 0;
             for (let i = 0; i < 5; i++) {
                 if (playerCard[i * 5 + i].marked) count1++;
             }
             if (count1 === 5) {
-                showWinner(`¡Jugador ${currentPlayer} ha ganado con una línea diagonal!`);
+                showWinner(`Player ${currentPlayer} has won with a diagonal line!`);
                 return;
             }
             
-            // Verificar diagonal secundaria
+            // Check secondary diagonal
             let count2 = 0;
             for (let i = 0; i < 5; i++) {
                 if (playerCard[i * 5 + (4 - i)].marked) count2++;
             }
             if (count2 === 5) {
-                showWinner(`¡Jugador ${currentPlayer} ha ganado con una línea diagonal!`);
+                showWinner(`Player ${currentPlayer} has won with a diagonal line!`);
                 return;
             }
             
-            alert('¡Aún no tienes BINGO! Sigue jugando.');
+            alert('You don\'t have BINGO yet! Keep playing.');
         }
 
-        // Mostrar ganador
+        // Show winner
         function showWinner(message) {
             document.getElementById('winnerText').textContent = message;
             document.getElementById('winnerModal').style.display = 'flex';
             gameInProgress = false;
         }
 
-        // Reiniciar juego
+        // Reset game
         function resetGame() {
             document.getElementById('winnerModal').style.display = 'none';
             document.getElementById('gameArea').style.display = 'none';
             document.getElementById('gameSetup').style.display = 'block';
-            document.getElementById('calledSentence').textContent = 'Esperando la primera oración...';
+            document.getElementById('calledSentence').textContent = 'Waiting for the first sentence...';
             
-            // Resetear selección de jugador
+            // Reset player selection
             document.querySelectorAll('.player-btn').forEach(btn => btn.classList.remove('active'));
             currentPlayer = 1;
             gameInProgress = false;
             calledSentences = [];
         }
 
-        // Seleccionar automáticamente el primer jugador por defecto
+        // Automatically select the first player by default
         document.querySelector('.player-btn[data-player="1"]').click();
     </script>
 </body>
 </html>
+
